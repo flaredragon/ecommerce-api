@@ -18,7 +18,7 @@ router.get('/buyers', buyerController.all);
 router.get('/buyers/:bid', buyerController.byID);
 router.put('/buyers/:bid/:pid/:q', buyerController.addtocart);
 router.put('/buyers/:bid/buy', buyerController.buy);
-router.put('/buyers/:bid/:pid/rm', buyerController.removefromcart);
+router.delete('/buyers/:bid/:pid', buyerController.removefromcart);
 
 
 router.get('/products', productController.all);

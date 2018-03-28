@@ -105,17 +105,32 @@ res.status(400).send(err);
             Buyer.findOne({_id: bid})
 			.exec( (err, buyer) => res.json(buyer) );
 },
-
-   removefromcart(req,res) {
+removefromcart(req,res) {
 	var bid=req.params.bid;
 	var pid = req.params.pid;
-	Buyer.findOne({_id:bid}).exec((err,buyer)=> {
-	if(err) console.log(err);	
-	thebuyer = buyer});
-	thebuyer.cart = thebuyer.cart.filter(item => item.id !== pid);
-	Buyer.where({ _id: bid }).update({ $set: { cart:thebuyer.cart }},{new: true})
-	.then((response) => res.json(response));
+	var q;
+	Buyer.findOne({_id:bid}).exec()
+	.then( (buyer) => {	
+	var x = buyer.cart.filter(function (item) { 
+	q=item.quantity;
+	return item.itemid.toString() !== pid; });
+	console.log(x);
+	
+	Buyer.where({ _id: bid }).update({ $set: { cart:x }})
+	.then((response) => console.log(response));
+return q;
+})
+.then( (q) => {
+
+Product.where({ _id: pid }).update({ $inc: { quantity: q }})
+	.then( (response) => res.json(response));
+})
+.catch((err) => {
+	res.status(400).send(err);
+});
 }
+
+   
 };
 
 module.exports = buyerController;
