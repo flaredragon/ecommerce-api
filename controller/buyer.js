@@ -73,6 +73,30 @@ res.status(400).send(err);
 });
 },
 
+ buy(req,res) {
+	var bid=req.params.bid;
+        Buyer.findOne({_id:bid}).exec()
+	.then( (buyer) => {
+	
+	var x = buyer.cart;
+
+	if(x.length>0)
+{	
+	x.forEach( function(value) 
+	{
+		buyer.itemsbought.push(value); 
+	});
+	Buyer.where({ _id: bid }).update({ $set: { cart:[], itemsbought:buyer.itemsbought }})
+	.then((response) => res.json(response));
+}
+	else res.status(400).send("Error");
+	})
+	.catch((err) => {
+	res.status(400).send(err);
+});
+
+},
+
     
 
     byID (req,res) {
